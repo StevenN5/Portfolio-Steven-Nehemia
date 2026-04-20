@@ -20,7 +20,8 @@ function updateToggleIcon() {
     icon.classList.remove('fa-moon');
     icon.classList.add('fa-sun');
 }
-    
+const contactForm = document.getElementById('contactForm');
+
     // Mobile Menu Toggle - Diperbaiki
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.querySelector('.nav-links');
@@ -78,14 +79,85 @@ function updateToggleIcon() {
     });
     
 if (contactForm) {
-  contactForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const submitBtn = contactForm.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-  });
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+        }
+    });
 }
     // Update tahun di footer
     document.getElementById('year').textContent = new Date().getFullYear();
+
+function setupProjectSlider() {
+  const projectsTrack = document.querySelector('.projects-track');
+  const projectCards = document.querySelectorAll('.project-card');
+  
+  if (!projectsTrack || projectCards.length === 0) return;
+
+  const cardWidth = projectCards[0].offsetWidth + 32; // 32 = margin gap
+  const totalCards = projectCards.length;
+
+  // Clone cards untuk seamless scroll
+  projectCards.forEach(card => {
+    const clone = card.cloneNode(true);
+    projectsTrack.appendChild(clone);
+  });
+
+  let currentIndex = 0;
+  const slideInterval = 3000;
+  let intervalId = setInterval(slideNext, slideInterval);
+
+  function slideNext() {
+    currentIndex++;
+    projectsTrack.style.transition = 'transform 0.5s ease-in-out';
+    projectsTrack.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+
+    if (currentIndex >= totalCards) {
+      setTimeout(() => {
+        projectsTrack.style.transition = 'none';
+        projectsTrack.style.transform = 'translateX(0)';
+        currentIndex = 0;
+      }, 500); // Tunggu animasi selesai
+    }
+  }
+
+  projectsTrack.addEventListener('mouseenter', () => {
+    clearInterval(intervalId);
+  });
+
+  projectsTrack.addEventListener('mouseleave', () => {
+    intervalId = setInterval(slideNext, slideInterval);
+  });
+
+  // Swipe gesture support
+  let startX = 0;
+  let isSwiping = false;
+
+  projectsTrack.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    clearInterval(intervalId);
+  }, { passive: true });
+
+  projectsTrack.addEventListener('touchmove', e => {
+    isSwiping = true;
+  }, { passive: true });
+
+  projectsTrack.addEventListener('touchend', e => {
+    const endX = e.changedTouches[0].clientX;
+    const deltaX = startX - endX;
+    if (deltaX > 50) slideNext(); // swipe left
+    if (deltaX < -50) {
+      currentIndex = Math.max(0, currentIndex - 1);
+      projectsTrack.style.transition = 'transform 0.5s ease-in-out';
+      projectsTrack.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+    }
+    intervalId = setInterval(slideNext, slideInterval);
+    isSwiping = false;
+  }, { passive: true });
+}
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', setupProjectSlider);
