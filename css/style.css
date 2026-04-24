@@ -692,15 +692,74 @@ body[data-theme="dark"] .project-card {
     flex: 1;
 }
 
+.project-summary {
+    flex: initial;
+}
+
+.project-extra-text {
+    margin-bottom: 1rem;
+    color: var(--text-secondary-light);
+}
+
+.project-feature-list {
+    margin: 0 0 1.25rem 1.2rem;
+    color: var(--text-secondary-light);
+}
+
+.project-feature-list li {
+    margin-bottom: 0.45rem;
+}
+
 body[data-theme="dark"] .project-info p {
     color: var(--text-secondary-dark);
+}
+
+body[data-theme="dark"] .project-extra-text {
+    color: var(--text-secondary-dark);
+}
+
+body[data-theme="dark"] .project-feature-list {
+    color: var(--text-secondary-dark);
+}
+
+.project-toggle {
+    align-self: flex-start;
+    margin-bottom: 1rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    background: rgba(107, 140, 188, 0.14);
+    color: var(--text-dark);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition-speed), transform var(--transition-speed), border-color var(--transition-speed);
+}
+
+.project-toggle:hover {
+    transform: translateY(-2px);
+    background: rgba(107, 140, 188, 0.22);
+}
+
+.project-toggle:focus-visible,
+.project-github:focus-visible {
+    outline: 2px solid var(--primary-dark);
+    outline-offset: 3px;
+}
+
+.project-details[hidden] {
+    display: none;
+}
+
+.project-details {
+    margin-bottom: 1rem;
 }
 
 .project-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .project-tag {
@@ -721,6 +780,173 @@ body[data-theme="dark"] .project-tag {
     margin-top: auto;
 }
 
+.project-github {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1rem;
+    border-radius: 999px;
+    background-color: var(--primary-light);
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity var(--transition-speed), transform var(--transition-speed);
+}
+
+body[data-theme="dark"] .project-github {
+    background-color: var(--primary-dark);
+}
+
+.project-github:hover {
+    opacity: 0.92;
+    transform: translateY(-2px);
+}
+
+body.project-modal-open {
+    overflow: hidden;
+}
+
+.project-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-speed);
+    z-index: 2000;
+}
+
+.project-modal.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.project-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(6, 10, 18, 0.45);
+    backdrop-filter: blur(16px);
+}
+
+.project-modal-card {
+    position: relative;
+    width: min(1120px, 100%);
+    max-height: min(92vh, 980px);
+    overflow: auto;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    background: rgba(27, 27, 31, 0.96);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+    display: grid;
+    grid-template-columns: minmax(420px, 1.15fr) minmax(420px, 0.95fr);
+    z-index: 1;
+}
+
+.project-modal-media {
+    min-height: 100%;
+    padding: 1.5rem;
+    background: linear-gradient(180deg, rgba(107, 140, 188, 0.28), rgba(74, 111, 165, 0.12));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.project-modal-media img {
+    width: 100%;
+    height: auto;
+    max-height: 78vh;
+    min-height: 320px;
+    object-fit: contain;
+    display: block;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.14);
+}
+
+.project-modal-body {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-modal-label {
+    display: inline-flex;
+    align-self: flex-start;
+    margin-bottom: 1rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(107, 140, 188, 0.18);
+    color: var(--primary-dark);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.project-modal-body h3 {
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    margin-bottom: 1rem;
+}
+
+.project-modal-summary {
+    color: var(--text-secondary-dark);
+    font-size: 1.02rem;
+    margin-bottom: 1.25rem;
+}
+
+.project-modal-details {
+    color: var(--text-secondary-dark);
+}
+
+.project-modal-details .project-tags {
+    margin-top: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.project-modal-details .project-github {
+    margin-top: 0.25rem;
+}
+
+.project-modal-footer {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.project-modal-date {
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.project-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(12, 16, 24, 0.78);
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.project-modal-close:hover {
+    transform: scale(1.04);
+    background: rgba(12, 16, 24, 0.95);
+}
+
+.project-modal-close:focus-visible {
+    outline: 2px solid var(--primary-dark);
+    outline-offset: 3px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .project-card {
@@ -733,6 +959,25 @@ body[data-theme="dark"] .project-tag {
     
     .project-info p {
         font-size: 0.9rem;
+    }
+
+    .project-modal {
+        padding: 1rem;
+    }
+
+    .project-modal-card {
+        grid-template-columns: 1fr;
+        max-height: 90vh;
+        border-radius: 22px;
+    }
+
+    .project-modal-media img {
+        min-height: 220px;
+        max-height: 42vh;
+    }
+
+    .project-modal-body {
+        padding: 1.35rem;
     }
 }
 

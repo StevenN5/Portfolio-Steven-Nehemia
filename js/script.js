@@ -95,6 +95,12 @@ if (contactForm) {
 function setupProjectSlider() {
   const projectsTrack = document.querySelector('.projects-track');
   const projectCards = document.querySelectorAll('.project-card');
+  const projectModal = document.getElementById('projectModal');
+  const modalImage = document.getElementById('projectModalImage');
+  const modalTitle = document.getElementById('projectModalTitle');
+  const modalSummary = document.getElementById('projectModalSummary');
+  const modalDetails = document.getElementById('projectModalDetails');
+  const modalDate = document.getElementById('projectModalDate');
   
   if (!projectsTrack || projectCards.length === 0) return;
 
@@ -110,6 +116,50 @@ function setupProjectSlider() {
   let currentIndex = 0;
   const slideInterval = 3000;
   let intervalId = setInterval(slideNext, slideInterval);
+  let isModalOpen = false;
+
+  function restartInterval() {
+    if (isModalOpen) return;
+    clearInterval(intervalId);
+    intervalId = setInterval(slideNext, slideInterval);
+  }
+
+  function openProjectModal(projectCard) {
+    if (!projectModal || !modalImage || !modalTitle || !modalSummary || !modalDetails || !modalDate) return;
+
+    const image = projectCard.querySelector('.project-image img');
+    const title = projectCard.querySelector('h3');
+    const summary = projectCard.querySelector('.project-summary');
+    const details = projectCard.querySelector('.project-details');
+    const date = projectCard.querySelector('.project-links span');
+
+    if (image) {
+      modalImage.src = image.src;
+      modalImage.alt = image.alt;
+    }
+
+    modalTitle.textContent = title?.textContent ?? '';
+    modalSummary.textContent = summary?.textContent ?? '';
+    modalDetails.innerHTML = details?.innerHTML ?? '';
+    modalDate.textContent = date?.textContent ?? '';
+
+    isModalOpen = true;
+    clearInterval(intervalId);
+    projectModal.classList.add('is-open');
+    projectModal.setAttribute('aria-hidden', 'false');
+    body.classList.add('project-modal-open');
+  }
+
+  function closeProjectModal() {
+    if (!projectModal || !isModalOpen) return;
+
+    isModalOpen = false;
+    projectModal.classList.remove('is-open');
+    projectModal.setAttribute('aria-hidden', 'true');
+    body.classList.remove('project-modal-open');
+    modalDetails.innerHTML = '';
+    restartInterval();
+  }
 
   function slideNext() {
     currentIndex++;
@@ -130,7 +180,7 @@ function setupProjectSlider() {
   });
 
   projectsTrack.addEventListener('mouseleave', () => {
-    intervalId = setInterval(slideNext, slideInterval);
+    restartInterval();
   });
 
   // Swipe gesture support
@@ -155,9 +205,32 @@ function setupProjectSlider() {
       projectsTrack.style.transition = 'transform 0.5s ease-in-out';
       projectsTrack.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
     }
-    intervalId = setInterval(slideNext, slideInterval);
+    restartInterval();
     isSwiping = false;
   }, { passive: true });
+
+  projectsTrack.addEventListener('click', event => {
+    const toggleButton = event.target.closest('.project-toggle');
+    if (!toggleButton) return;
+
+    event.preventDefault();
+    const projectCard = toggleButton.closest('.project-card');
+    if (!projectCard) return;
+
+    openProjectModal(projectCard);
+  });
+
+  projectModal?.addEventListener('click', event => {
+    if (event.target.closest('[data-modal-close]')) {
+      closeProjectModal();
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      closeProjectModal();
+    }
+  });
 }
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', setupProjectSlider);
